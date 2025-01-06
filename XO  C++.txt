@@ -344,5 +344,5 @@ void main() {
 	cout << "the game is finished press enter to leave";
 	//lo3ba kamlat 
 
-	cout << endl;
+	cout << endl;//this is just a comment
 }
