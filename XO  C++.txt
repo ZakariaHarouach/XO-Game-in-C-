@@ -1,0 +1,348 @@
+#include <iostream>
+#include "clsInputValidate.h"
+#include "clsUtil.h"
+
+using namespace std;
+
+enum enWinnerVsCom { User = 1, Com = 2, Draw = 3, No = 4 };
+
+enum enWinnerVsP { UserP1 = 1, UserP2 = 2, Draw2P = 3, No2P = 4 };
+
+enum enPlayer { User1 = 1, COM = 2 };
+
+enum en2Players { P1 = 1, P2 = 2 };
+
+bool IsValidChoice(short vChoised[9], short Choice) {
+
+	return (vChoised[Choice - 1] == 0);
+}
+
+short ReadUserChoise(short vChoised[9]) {
+
+	short Choise;
+	do {
+
+		cout << "enter your choise : ";
+		Choise = clsInputValidate::ReadIntNumberBetween(1, 9, "I need a number ");
+	} while (!IsValidChoice(vChoised, Choise));
+
+	return Choise;
+}
+
+short GetComChoise(short vChoised[9]) {
+
+	short ComChoise;
+
+	do {
+
+		ComChoise = clsutil::RandomNumber(0, 8);
+	} while (!IsValidChoice(vChoised, ComChoise));
+
+	return ComChoise;
+}
+
+enWinnerVsCom CheckWinner(short vChoised[9]) {
+
+	short winner;
+	/*hadi dyal * * *
+	*/
+	if (vChoised[0] == vChoised[1] && vChoised[0] == vChoised[2] && vChoised[0] != 0) {
+		winner = vChoised[1];
+		return enWinnerVsCom(winner);
+	}
+
+	else if (vChoised[3] == vChoised[4] && vChoised[3] == vChoised[5] && vChoised[3] != 0) {
+		winner = vChoised[3];
+		return enWinnerVsCom(winner);
+	}
+
+	else if (vChoised[6] == vChoised[7] && vChoised[6] == vChoised[8] && vChoised[6] != 0) {
+		winner = vChoised[6];
+		return enWinnerVsCom(winner);
+	}
+	/* hadi dyal *
+				 *
+				 *
+*/
+	else if (vChoised[0] == vChoised[3] && vChoised[0] == vChoised[6] && vChoised[0] != 0) {
+		winner = vChoised[0];
+		return enWinnerVsCom(winner);
+	}
+
+	else if (vChoised[1] == vChoised[4] && vChoised[1] == vChoised[7] && vChoised[1] != 0) {
+		winner = vChoised[1];
+		return enWinnerVsCom(winner);
+	}
+
+	else if (vChoised[2] == vChoised[5] && vChoised[2] == vChoised[8] && vChoised[2] != 0) {
+		winner = vChoised[2];
+		return enWinnerVsCom(winner);
+	}
+	/*hadi dyal  *
+				   *
+					 *
+*/
+	else if (vChoised[0] == vChoised[4] && vChoised[0] == vChoised[8] && vChoised[0] != 0) {
+		winner = vChoised[4];
+		return enWinnerVsCom(winner);
+	}
+
+	else if (vChoised[2] == vChoised[4] && vChoised[2] == vChoised[6] && vChoised[2] != 0) {
+		winner = vChoised[4];
+		return enWinnerVsCom(winner);
+	}
+
+	//katchof wach ba9i chi morba3 khawi
+
+	for (short i = 0; i < 9; i++) {
+		if (vChoised[i] == 0)
+			return No;
+	}
+
+	return Draw;
+}
+
+enWinnerVsP CheckWinner2P(short vChoised[9]) {
+
+	enWinnerVsCom Winner = CheckWinner(vChoised);
+	
+	switch (Winner)
+	{
+	case User:
+		return UserP1;
+		break;
+	case Com:
+		return UserP2;
+		break;
+	case Draw:
+		return Draw2P;
+		break;
+	case No:
+		return No2P;
+		break;
+	default:
+		break;
+	}
+}
+
+void PrintWinner(enWinnerVsCom Winner) {
+
+	switch (Winner) {
+	case Draw:
+		cout << "no Winner it's a draw";
+		break;
+	case User:
+		cout << "the Winner is You";
+		break;
+	case Com:
+		cout << "the Winner is Com";
+		break;
+	default:
+		cout << "something went wrong";
+		break;
+	}
+}
+
+void PrintWinner(enWinnerVsP Winner,string P1,string P2) {
+
+	switch (Winner)
+	{
+	case UserP1:
+		cout << P1 << " Win";
+		break;
+	case UserP2:
+		cout << P2 << " Win";
+		break;
+	case Draw2P:
+		cout << "no Winner it's a draw";
+		break;
+	default:
+		cout << "something went wrong";
+		break;
+	}
+}
+
+void ChangePlayer(enPlayer& Player) {
+
+	if (Player == User)
+		Player = COM;
+	else
+		Player = User1;
+}
+
+void ChangePlayer(en2Players& Player) {
+
+	if (Player == P1)
+		Player = P2;
+	else
+		Player = P1;
+}
+
+void PrintTable(short vChoised[9]) {
+
+	for (short i = 0; i < 9; i++)
+	{
+		if (i % 3 == 0)
+			cout << "\n\n";
+
+		if (vChoised[i] == 0)
+
+			printf("\t?%d? |", i + 1);
+
+		else if (vChoised[i] == 1)
+
+			cout << "\tX   |";
+		else
+			cout << "\tO   |";
+	}
+	cout << "\n\n";
+}
+
+void AssignChoice(short vChoised[9], short Choise, enPlayer Player) {
+
+	vChoised[Choise - 1] = short(Player);
+}
+
+void AssignChoice(short vChoised[9], short Choise, en2Players Player) {
+
+	vChoised[Choise - 1] = short(Player);
+}
+
+void VsCom(short me[9]) {
+
+	enPlayer Player = User1;
+
+	for (short i = 0; i <= 9; i++) {
+		system("cls");
+
+		enWinnerVsCom Winner = No;
+
+		if (i >= 5)
+			Winner = CheckWinner(me);
+
+		if (Winner == No) {
+
+			if (Player == User1) {
+
+				PrintTable(me);
+				short UserChoise = ReadUserChoise(me);
+				AssignChoice(me, UserChoise, Player);
+			}
+
+			else {
+				short ComChoise = GetComChoise(me);
+				AssignChoice(me, ComChoise, Player);
+			}
+		}
+
+		else {
+			PrintTable(me);
+			PrintWinner(Winner);
+			break;
+		}
+
+		ChangePlayer(Player);
+	}
+}
+
+string ReadPlayerName(string Message) {
+
+	string PlayerName;
+	cout << Message;
+	cin >> PlayerName;
+
+	return PlayerName;
+}
+
+void SwitchTurn(string& Turn, string P1, string P2) {
+	if (Turn == P1)
+		Turn = P2;
+	else
+		Turn = P1;
+}
+
+void VsFriend( short me[9]) {
+
+	string P1Name = ReadPlayerName("you are the first player enter your name : "), P2Name = ReadPlayerName("you are the second player enter your name : "),Turn = P1Name;
+	en2Players Player=P1;
+
+	for (short i = 0; i <= 9; i++) {
+		system("cls");
+
+		enWinnerVsP Winner = No2P;
+
+		if (i >= 5)
+			Winner = CheckWinner2P(me);
+
+		if (Winner == No) {
+
+			if (Player == en2Players::P1) {
+
+				PrintTable(me);
+				cout << "it's your turn " << P1Name << '\n';
+				short User1Choise = ReadUserChoise(me);
+				AssignChoice(me, User1Choise, Player);
+			}
+
+			else {
+				PrintTable(me);
+				cout << "it's your turn " << P2Name << '\n';
+				short User2Choise = ReadUserChoise(me);
+				AssignChoice(me, User2Choise, Player);
+			}
+		}
+
+		else {
+			PrintTable(me);
+			PrintWinner(Winner,P1Name,P2Name);
+			break;
+		}
+
+		ChangePlayer(Player);
+	}
+
+}
+
+short GetTypeOfGame() {
+
+	short Answer;
+	cout << "what type of game you want to Play? \n [1] One Player \n [2] two Players \n ";
+
+	Answer = clsInputValidate::ReadIntNumberBetween(1, 2, "please enter 1 or 2");
+
+	return Answer;
+}
+
+void Start() {
+
+	short me[9] = { 0,0,0,0,0,0,0,0,0 }, Answer = GetTypeOfGame();
+	system("cls");
+	switch (Answer)
+	{
+	case 1:
+		VsCom(me);
+		break;
+	case 2:
+		VsFriend(me);
+		break;
+	default:
+		break;
+	}
+
+}
+
+void main() {
+
+	srand(unsigned(time(NULL)));
+
+
+	Start();
+	
+
+	system("pause>0");
+	cout << endl;
+	cout << "the game is finished press enter to leave";
+	//lo3ba kamlat 
+
+	cout << endl;
+}
